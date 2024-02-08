@@ -8,11 +8,20 @@ const Navbar = () => {
       <div className="container mx-auto flex justify-between items-center">
         <div className="flex items-center">
           <Link href="/">
-            <div className="text-2xl font-bold">Brand</div>
+            <div className="flex items-center">
+              <Image
+                src="/images/logo-symbol.png"
+                alt="brand"
+                width={40}
+                height={40}
+              />
+              <span className="text-2xl font-bold ml-2 text-blue-500">Brand</span>
+            </div>
           </Link>
         </div>
         <div className="flex items-center ">
           <input
+            id="search"
             type="text"
             placeholder="Search..."
             className="bg-white border-2 border-blue-500 text-white py-2 px-4 rounded-l leading-tight focus:outline-none focus:border-blue-500 border-r-0"
@@ -57,11 +66,11 @@ const Navbar = () => {
           <Link href="/profile">
             <div className="mx-4 text-slate-500 text-sm font-semibold flex flex-col items-center">
               <Image
-                src="https://im7.ezgif.com/tmp/ezgif-7-3352657a4e.png"
+                src="/images/person.png"
                 width={60}
                 height={50}
                 alt="Profile"
-                className="w-5 h-6 mb-1"
+                className="w-5 h-5 mb-1"
               />
               <span>Profile</span>
             </div>
@@ -69,11 +78,11 @@ const Navbar = () => {
           <Link href="/cart">
             <div className="ml-4 text-slate-500 text-sm font-semibold flex flex-col items-center">
               <Image
-                src="https://im7.ezgif.com/tmp/ezgif-7-a616f71c54.png"
+                src="/images/cart.png"
                 width={50}
                 height={50}
                 alt="Cart"
-                className="w-5 h-6 mb-1"
+                className="w-5 h-5 mb-1"
               />
               <span>My Cart</span>
             </div>

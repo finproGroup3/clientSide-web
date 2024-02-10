@@ -4,7 +4,7 @@ import Link from "next/link";
 function Card() {
   return (
     <div className="bg-white pt-4">
-      <div className="bg-white mx-32 rounded border shadow-lg">
+      <div className="bg-white mx-32 my-4 rounded border shadow-lg">
         <h1 className="ml-5 font-semibold text-lg text-black my-6">All Product</h1>
         <div className="grid md:grid-cols-4 grid-cols-2 sm:grid-cols-3 bg-white">
           <div className="p-4">

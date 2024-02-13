@@ -78,24 +78,6 @@ function Dashboard() {
             </h1>
             <h1 className="text-center text-slate-500">Get Your Item Now !</h1>
           </div>
-          <div className="flex my-4">
-            <div className="w-1/5 mx-auto text-center text-white bg-gray-500 rounded">
-              <p>05</p>
-              <p>days</p>
-            </div>
-            <div className="w-1/5 mx-auto text-center text-white bg-gray-500 rounded">
-              <p>05</p>
-              <p>hours</p>
-            </div>
-            <div className="w-1/5 mx-auto text-center text-white bg-gray-500 rounded">
-              <p>05</p>
-              <p>min</p>
-            </div>
-            <div className="w-1/5 mx-auto text-center text-white bg-gray-500 rounded">
-              <p>05</p>
-              <p>sec</p>
-            </div>
-          </div>
           <div>
             <div className="flex mt-4 mx-4">
               <div className="w-1/3 mx-3 relative">
@@ -208,7 +190,7 @@ function Dashboard() {
               Categories
             </p>
             <Link href='/'>
-            <p className="bg-white text-black w-max px-4 py-2 rounded-md font-semibold mt-4 hover:cursor-pointer hover:bg-blue-500 hover:text-white transition-all">Source Now</p>
+              <p className="bg-white text-black w-max px-4 py-2 rounded-md font-semibold mt-4 hover:cursor-pointer hover:bg-blue-500 hover:text-white transition-all">Source Now</p>
             </Link>
           </div>
           <div className="flex flex-col w-full">
@@ -216,59 +198,59 @@ function Dashboard() {
               <div className="w-1/4 p-4 border">
                 <p className="text-black uppercase">Categories 1</p>
                 <div className="flex ">
-                    <p>from Rp.1.000.000</p>
-                    <Image src='/images/list-categories.svg' alt="categories1" width={60} height={60}></Image>
+                  <p>from Rp.1.000.000</p>
+                  <Image src='/images/list-categories.svg' alt="categories1" width={60} height={60}></Image>
                 </div>
               </div>
               <div className="w-1/4 p-4 border">
                 <p className="text-black uppercase">Categories 2</p>
                 <div className="flex ">
-                    <p>from Rp.1.000.000</p>
-                    <Image src='/images/list-categories.svg' alt="categories1" width={60} height={60}></Image>
+                  <p>from Rp.1.000.000</p>
+                  <Image src='/images/list-categories.svg' alt="categories1" width={60} height={60}></Image>
                 </div>
               </div>
               <div className="w-1/4 p-4 border">
                 <p className="text-black uppercase">Categories 3</p>
                 <div className="flex ">
-                    <p>from Rp.1.000.000</p>
-                    <Image src='/images/list-categories.svg' alt="categories1" width={60} height={60}></Image>
+                  <p>from Rp.1.000.000</p>
+                  <Image src='/images/list-categories.svg' alt="categories1" width={60} height={60}></Image>
                 </div>
               </div>
               <div className="w-1/4 p-4 border">
                 <p className="text-black uppercase">Categories 4</p>
                 <div className="flex ">
-                    <p>from Rp.1.000.000</p>
-                    <Image src='/images/list-categories.svg' alt="categories1" width={60} height={60}></Image>
+                  <p>from Rp.1.000.000</p>
+                  <Image src='/images/list-categories.svg' alt="categories1" width={60} height={60}></Image>
                 </div>
               </div>
             </div>
             <div className="flex h-1/2">
-            <div className="w-1/4 p-4 border">
+              <div className="w-1/4 p-4 border">
                 <p className="text-black uppercase">Categories 5</p>
                 <div className="flex ">
-                    <p>from Rp.1.000.000</p>
-                    <Image src='/images/list-categories.svg' alt="categories1" width={60} height={60}></Image>
+                  <p>from Rp.1.000.000</p>
+                  <Image src='/images/list-categories.svg' alt="categories1" width={60} height={60}></Image>
                 </div>
               </div>
-            <div className="w-1/4 p-4 border">
+              <div className="w-1/4 p-4 border">
                 <p className="text-black uppercase">Categories 6</p>
                 <div className="flex ">
-                    <p>from Rp.1.000.000</p>
-                    <Image src='/images/list-categories.svg' alt="categories1" width={60} height={60}></Image>
+                  <p>from Rp.1.000.000</p>
+                  <Image src='/images/list-categories.svg' alt="categories1" width={60} height={60}></Image>
                 </div>
               </div>
-            <div className="w-1/4 p-4 border">
+              <div className="w-1/4 p-4 border">
                 <p className="text-black uppercase">Categories 7</p>
                 <div className="flex ">
-                    <p>from Rp.1.000.000</p>
-                    <Image src='/images/list-categories.svg' alt="categories1" width={60} height={60}></Image>
+                  <p>from Rp.1.000.000</p>
+                  <Image src='/images/list-categories.svg' alt="categories1" width={60} height={60}></Image>
                 </div>
               </div>
-            <div className="w-1/4 p-4 border">
+              <div className="w-1/4 p-4 border">
                 <p className="text-black uppercase">Categories 8</p>
                 <div className="flex ">
-                    <p>from Rp.1.000.000</p>
-                    <Image src='/images/list-categories.svg' alt="categories1" width={60} height={60}></Image>
+                  <p>from Rp.1.000.000</p>
+                  <Image src='/images/list-categories.svg' alt="categories1" width={60} height={60}></Image>
                 </div>
               </div>
             </div>

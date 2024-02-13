@@ -132,7 +132,7 @@ export default function Cart() {
           <hr className="m-4" />
           <div className="flex flex-row justify-between p-4">
             <button className="bg-blue-500 border hover:bg-blue-700   text-white px-3 py-1 rounded-md">
-              {""} Back to shop
+              {"<"} Back to shop
             </button>
             <button className="text-blue-500 border hover:border-0 hover:bg-red-500 hover:text-white  font-semibold bg-white px-3 py-1 rounded-md">
               Remove all

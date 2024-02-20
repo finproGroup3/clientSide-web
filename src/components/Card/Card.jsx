@@ -5,7 +5,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 function Card() {
-  const [isSignInDialogOpen, setSignInDialogOpen] = useState(false);
+  const [isQuantityModalOpen, setQuantityModalOpen] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [products, setProducts] = useState([]);
 
@@ -51,12 +51,12 @@ function Card() {
     fetchProduct();
   }, []);
 
-  const handleSignInClick = () => {
-    setSignInDialogOpen(true);
+  const handleQuantity = () => {
+    setQuantityModalOpen(true);
   };
 
   const handleBackdropClick = () => {
-    setSignInDialogOpen(false);
+    setQuantityModalOpen(false);
   };
 
   const handleModalClick = (e) => {
@@ -76,7 +76,7 @@ function Card() {
   return (
     <div className="bg-white pt-4">
       {/* modal start */}
-      {isSignInDialogOpen && (
+      {isQuantityModalOpen && (
         <div
           data-dialog-show="sign-in-dialog"
           data-dialog-close="true"
@@ -131,11 +131,11 @@ function Card() {
             <div key={product.id} className="p-4">
               <Link href={`/products/${product.id}`}>
                 <Image
-                  src="http://localhost:3000/uploads/productImage/1707555983363-web-main.jpg"
+                   src={`http://localhost:3000/uploads/productImage/${product.ProductGalleries[0].imageUrl}`}
                   alt="Image"
                   width={270}
                   height={240}
-                  className="rounded-md"
+                  className="rounded-md object-cover h-64"
                 />
                 <p className="text-black font-bold text-lg text-center">
                   {formatRupiah(product.price)}
@@ -145,7 +145,7 @@ function Card() {
                 </p>
               </Link>
               <button
-                onClick={handleSignInClick}
+                onClick={handleQuantity}
                 className="flex items-center mx-auto bg-white mt-3 text-blue-500 border-2 rounded-md border-slate-400 px-4 py-2"
               >
                 <Image

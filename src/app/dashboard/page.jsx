@@ -110,7 +110,7 @@ function Dashboard() {
             {promos[0]?.Products.map((product) => (
               <div key={promos[0].id} className={`w-1/3 mx-3 relative`}>
                 <Image
-                  src={product.ProductGalleries[0].imageUrl}
+                  src={`http://localhost:3000/uploads/productImage/${product.ProductGalleries[0].imageUrl}`}
                   alt={`Promo Image - ${promos[0].code}`}
                   width={80}
                   height={80}

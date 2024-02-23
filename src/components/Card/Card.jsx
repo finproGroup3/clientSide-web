@@ -30,7 +30,7 @@ function Card() {
   
 
   useEffect(() => {
-    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImVtYWlsIjoidXNlcjJAZ21haWwuY29tIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3MDg0MTI2OTIsImV4cCI6MTcwODQ1NTg5Mn0.QlsFcQdJSK411tbHdKqSkw5KQbs1WZDqvbl0MVIQmF8'
+    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImVtYWlsIjoidXNlcjJAZ21haWwuY29tIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3MDg2ODA5MzMsImV4cCI6MTcwODcyNDEzM30.dPTQGmMGJA14IVYm90C8EyPM65AcHD8zbLi_DlFx540'
     localStorage.setItem('token', token)
     
     const fetchProduct = async () => {

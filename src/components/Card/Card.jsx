@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import defaultImage from '../../../public/images/test-product.jpg'
 
 function Card() {
   const [isQuantityModalOpen, setQuantityModalOpen] = useState(false);
@@ -27,18 +28,16 @@ function Card() {
     }
   };
 
-  
+
 
   useEffect(() => {
-    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImVtYWlsIjoidXNlcjJAZ21haWwuY29tIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3MDg0MTI2OTIsImV4cCI6MTcwODQ1NTg5Mn0.QlsFcQdJSK411tbHdKqSkw5KQbs1WZDqvbl0MVIQmF8'
-    localStorage.setItem('token', token)
-    
+
     const fetchProduct = async () => {
       try {
         const storedToken = localStorage.getItem('token');
-        const response = await axios.get("http://localhost:3000/product/",{
+        const response = await axios.get("http://localhost:3000/product/", {
           headers: {
-            Authorization:`Bearer ${storedToken}`,
+            Authorization: `Bearer ${storedToken}`,
           },
         });
         const product = response.data.data;
@@ -69,10 +68,10 @@ function Card() {
       currency: 'IDR',
       minimumFractionDigits: 0,
     }).format(amount);
-  
+
     return formattedAmount;
   }
-
+  console.log(products);
   return (
     <div className="bg-white pt-4">
       {/* modal start */}
@@ -127,11 +126,15 @@ function Card() {
           All Product
         </h1>
         <div className="grid md:grid-cols-4 grid-cols-2 sm:grid-cols-3 bg-white">
-          {products?.map((product) => (
+          {products && products.length > 0 && products.map((product) => (
             <div key={product.id} className="p-4">
               <Link href={`/products/${product.id}`}>
                 <Image
-                   src={`http://localhost:3000/uploads/productImage/${product.ProductGalleries[0].imageUrl}`}
+                  src={
+                    product.ProductGalleries[0]?.imageUrl
+                      ? `http://localhost:3000/uploads/productImage/${product.ProductGalleries[0].imageUrl}`
+                      : defaultImage // Fallback image
+                  }
                   alt="Image"
                   width={270}
                   height={240}
@@ -159,6 +162,7 @@ function Card() {
               </button>
             </div>
           ))}
+
         </div>
       </div>
     </div>

@@ -14,9 +14,7 @@ export default function Page() {
     const idFromPath = pathname.substring(pathname.lastIndexOf("/") + 1);
 
     const fetchOrder = async () => {
-      const token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImVtYWlsIjoidXNlcjJAZ21haWwuY29tIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3MDg1ODY0MTMsImV4cCI6MTcwODYyOTYxM30.iwwboP0oWj44eIfoY646wdJpQKdpBJpWvIsGSWbSEME";
-      localStorage.setItem("token", token);
+
       try {
         const storedToken = localStorage.getItem("token");
         const response = await axios.get(

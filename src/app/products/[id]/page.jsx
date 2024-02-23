@@ -16,9 +16,6 @@ const ProductDetail = () => {
     const idFromPath = pathname.substring(pathname.lastIndexOf("/") + 1);
 
     const fetchProductDetail = async () => {
-      const token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImVtYWlsIjoidXNlcjJAZ21haWwuY29tIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3MDg0MTI2OTIsImV4cCI6MTcwODQ1NTg5Mn0.QlsFcQdJSK411tbHdKqSkw5KQbs1WZDqvbl0MVIQmF8";
-      localStorage.setItem("token", token);
       try {
         const storedToken = localStorage.getItem("token");
         const response = await axios.get(
@@ -214,7 +211,7 @@ const ProductDetail = () => {
                 <span className="text-gray-500 capitalize">
                   {product?.Category?.name}
                 </span>
-              </li>      
+              </li>
             </ul>
           </div>
         </div>

@@ -1,11 +1,10 @@
 "use client";
-import back from '../../../public/images/back.png'
+import back from "../../../public/images/back.png";
 import Link from "next/link";
 import Image from "next/image";
 import React from "react";
 import { useState, useEffect } from "react";
 import axios from "axios";
-
 
 export default function Cart() {
   const [isSignInDialogOpen, setSignInDialogOpen] = useState(false);
@@ -33,9 +32,6 @@ export default function Cart() {
     }
   };
 
-  const handleAplyed = () => {
-    setIsAplyed(true)
-  }
 
   const handleChangeQuantity = () => {
     setSignInDialogOpen(true);
@@ -52,18 +48,19 @@ export default function Cart() {
   const fetchPromos = async () => {
     try {
       // Retrieve the token from localStorage
-      const storedToken = localStorage.getItem('token');
+      const storedToken = localStorage.getItem("token");
 
       // Make the Axios request with the token in the Authorization header
       const response = await axios.get("http://localhost:3000/promo", {
         headers: {
-          Authorization: `Bearer ${storedToken}`
-        }
+          Authorization: `Bearer ${storedToken}`,
+        },
       });
 
       // Set the promos state with the data from the response
       const promoProduct = response.data.data;
       setPromos(promoProduct);
+      console.log(promoProduct);
     } catch (error) {
       console.error("Error fetching promo data:", error);
     }
@@ -74,7 +71,6 @@ export default function Cart() {
     fetchPromos();
   }, []);
 
-
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
@@ -84,7 +80,31 @@ export default function Cart() {
     setIsOpen(false);
   };
 
-  const coupons = ["COUPON1", "COUPON2", "COUPON3"];
+  const [appliedDiscount, setAppliedDiscount] = useState(0);
+
+  const applyPromo = (promoCode) => {
+    const appliedPromo = promos.find(
+      (promo) => promo.description === promoCode
+    );
+
+    if (appliedPromo) {
+      console.log("Promo Applied:", appliedPromo);
+      setAppliedDiscount(appliedPromo.percentage);
+      setIsAplyed(true);
+    }
+  };
+
+  const calculateDiscount = (subtotal, discountPercentage) => {
+    const discountAmount = (subtotal * discountPercentage) / 100;
+    return discountAmount;
+  };
+
+  const formatToRupiah = (amount) => {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+    }).format(amount);
+  };
 
   return (
     <section>
@@ -185,12 +205,7 @@ export default function Cart() {
               <button className="bg-blue-500 border hover:bg-blue-700   text-white px-3 py-1 rounded-md">
                 <Link href="/">
                   <div className="flex gap-2 items-center justify-center">
-                    <Image
-                      src={back}
-                      alt="back"
-                      width={20}
-                      height={20}
-                    />
+                    <Image src={back} alt="back" width={20} height={20} />
                     <span> Back to shop</span>
                   </div>
                 </Link>
@@ -235,14 +250,16 @@ export default function Cart() {
                 <button
                   type="button"
                   className="border-2 rounded-lg font-semibold w-full mt-3 py-1 px-4 text-blue-500 border-slate-200 hover:bg-blue-500 hover:text-white focus:outline-none focus:ring focus:border-blue-300"
-                  onClick={() =>
-                    handleAplyed()
-                  }
+                  onClick={() => applyPromo(selectedCoupon)}
                 >
                   Apply
                 </button>
               </div>
-              {isAplyed === true ? <p className="text-green-500">Promo {selectedCoupon} applied</p> : ''}
+              {isAplyed === true ? (
+                <p className="text-green-500">{selectedCoupon} applied, Discount : {appliedDiscount}%</p>
+              ) : (
+                ""
+              )}
 
               {/* Menampilkan informasi diskon */}
               <div className="bg-white border-2 px-4 pb-5 rounded-xl shadow-md mt-3">
@@ -252,11 +269,17 @@ export default function Cart() {
                     <span>Subtotal:</span>
                     <span>Rp. 70000</span>
                   </li>
+                    {isAplyed === true ? (
                   <li className="flex flex-row justify-between">
                     {" "}
                     <span>Discount:</span>
-                    <span className="text-red-500">-Rp.10000</span>
+                      <p className="text-green-500">
+                      {formatToRupiah(calculateDiscount(70000, appliedDiscount))}
+                      </p>
                   </li>
+                    ) : (
+                      ""
+                    )}
                   <hr />
                   <li className="flex flex-row justify-between font-bold mt-5 text-black text-xl">
                     <span>Total:</span> <span>Rp 170.000</span>

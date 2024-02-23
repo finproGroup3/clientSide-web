@@ -75,8 +75,9 @@ function Dashboard() {
         password
       });
       // Handle successful login response here
-      console.log('Login success:', response.data);
       localStorage.setItem('token', response.data.token);
+      console.log(response.data.data.Cart.id);
+      localStorage.setItem('cartId', response.data.data.Cart.id);
       localStorage.setItem('isLoggedIn', false);
       setIsLoggedIn(false);
       handleCloseDialogs();

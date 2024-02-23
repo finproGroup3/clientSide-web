@@ -71,7 +71,6 @@ function Card() {
 
     return formattedAmount;
   }
-  console.log(products);
   return (
     <div className="bg-white pt-4">
       {/* modal start */}
@@ -121,13 +120,13 @@ function Card() {
       )}
       {/* modal end */}
 
-      <div className="bg-white mx-32 my-4 rounded border shadow-lg">
+      <div className="bg-white mx-32 my-4 rounded border shadow-lg p-5">
         <h1 className="ml-5 font-semibold text-lg text-black my-6">
           All Product
         </h1>
-        <div className="grid md:grid-cols-4 grid-cols-2 sm:grid-cols-3 bg-white">
+        <div className="flex justify-between flex-wrap gap-y-10 bg-white">
           {products && products.length > 0 && products.map((product) => (
-            <div key={product.id} className="p-4">
+            <div key={product.id} className="p-4 shadow-md">
               <Link href={`/products/${product.id}`}>
                 <Image
                   src={
@@ -136,11 +135,11 @@ function Card() {
                       : defaultImage // Fallback image
                   }
                   alt="Image"
-                  width={270}
+                  width={250}
                   height={240}
                   className="rounded-md object-cover h-64"
                 />
-                <p className="text-black font-bold text-lg text-center">
+                <p className="text-black font-bold text-lg text-center mt-4">
                   {formatRupiah(product.price)}
                 </p>
                 <p className="text-slate-500 text-center font-semibold">

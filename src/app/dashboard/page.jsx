@@ -67,7 +67,7 @@ function Dashboard() {
     };
     fetchPromos();
   }, []);
-
+  localStorage.setItem('isLoggedIn', false);
   const handleLogin = async () => {
     try {
       const response = await axios.post('http://localhost:3000/users/login', {
@@ -75,10 +75,10 @@ function Dashboard() {
         password
       });
       // Handle successful login response here
-      console.log('Login success:', response.data.token);
+      console.log('Login success:', response.data);
       localStorage.setItem('token', response.data.token);
-      localStorage.setItem('isLoggedIn', true);
-      setIsLoggedIn(true);
+      localStorage.setItem('isLoggedIn', false);
+      setIsLoggedIn(false);
       handleCloseDialogs();
     } catch (error) {
       // Handle login error here

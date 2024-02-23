@@ -1,9 +1,11 @@
 "use client";
-import { ArrowLeftOutlined } from "@ant-design/icons";
+import back from '../../../public/images/back.png'
+import Link from "next/link";
 import Image from "next/image";
 import React from "react";
 import { useState, useEffect } from "react";
 import axios from "axios";
+
 
 export default function Cart() {
   const [isSignInDialogOpen, setSignInDialogOpen] = useState(false);
@@ -47,19 +49,31 @@ export default function Cart() {
     e.stopPropagation();
   };
 
-  useEffect(() => {
-    const fetchPromos = async () => {
-      try {
-        const response = await axios.get("http://localhost:3000/promo");
-        const promoProduct = response.data.data;
-        setPromos(promoProduct);
-      } catch (error) {
-        console.error("Error fetching promo data:", error);
-      }
-    };
+  const fetchPromos = async () => {
+    try {
+      // Retrieve the token from localStorage
+      const storedToken = localStorage.getItem('token');
 
+      // Make the Axios request with the token in the Authorization header
+      const response = await axios.get("http://localhost:3000/promo", {
+        headers: {
+          Authorization: `Bearer ${storedToken}`
+        }
+      });
+
+      // Set the promos state with the data from the response
+      const promoProduct = response.data.data;
+      setPromos(promoProduct);
+    } catch (error) {
+      console.error("Error fetching promo data:", error);
+    }
+  };
+
+  // Call fetchPromos when the component mounts
+  useEffect(() => {
     fetchPromos();
   }, []);
+
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -166,13 +180,20 @@ export default function Cart() {
               <button className="bg-white border hover:bg-red-500 hover:text-white text-red-500 px-3 py-1 rounded-md">
                 Remove
               </button>
-              <button className="bg-white border hover:bg-blue-500 hover:text-white text-blue-500 px-3 py-1 rounded-md">
-                Save for later
-              </button>
             </div>
             <div className="flex flex-row justify-between p-4">
               <button className="bg-blue-500 border hover:bg-blue-700   text-white px-3 py-1 rounded-md">
-                {"<"} Back to shop
+                <Link href="/">
+                  <div className="flex gap-2 items-center justify-center">
+                    <Image
+                      src={back}
+                      alt="back"
+                      width={20}
+                      height={20}
+                    />
+                    <span> Back to shop</span>
+                  </div>
+                </Link>
               </button>
               <button className="text-blue-500 border hover:border-0 hover:bg-red-500 hover:text-white  font-semibold bg-white px-3 py-1 rounded-md">
                 Remove all
@@ -221,7 +242,7 @@ export default function Cart() {
                   Apply
                 </button>
               </div>
-              {isAplyed === true ? <p className="text-green-500">Promo {selectedCoupon} applied</p> : '' }
+              {isAplyed === true ? <p className="text-green-500">Promo {selectedCoupon} applied</p> : ''}
 
               {/* Menampilkan informasi diskon */}
               <div className="bg-white border-2 px-4 pb-5 rounded-xl shadow-md mt-3">
@@ -235,11 +256,6 @@ export default function Cart() {
                     {" "}
                     <span>Discount:</span>
                     <span className="text-red-500">-Rp.10000</span>
-                  </li>
-                  <li className="flex flex-row justify-between">
-                    {" "}
-                    <span>Tax:</span>
-                    <span className="text-green-500">+Rp. 70000</span>
                   </li>
                   <hr />
                   <li className="flex flex-row justify-between font-bold mt-5 text-black text-xl">

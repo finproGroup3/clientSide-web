@@ -12,10 +12,11 @@ function Card() {
 
   const addToCart = async (productId) => {
     try {
-      const cartId = "ganti_dengan_id_cart";
+      
+      const cartId =  localStorage.getItem('cartId')
 
       const response = await axios.post(
-        `http://localhost:3000/cart/1/product`,
+        `http://localhost:3000/cart/${cartId}/product`,
         {
           productId: productId,
           quantity: quantity,
@@ -58,7 +59,7 @@ function Card() {
     setQuantityModalOpen(false);
   };
 
-  const handleModalClick = (e) => {
+  const handleModalClick = (e, ) => {
     e.stopPropagation();
   };
 
@@ -125,8 +126,8 @@ function Card() {
           All Product
         </h1>
         <div className="flex justify-between flex-wrap gap-y-10 bg-white">
-          {products && products.length > 0 && products.map((product) => (
-            <div key={product.id} className="p-4 shadow-md">
+          {products && products.length > 0 && products.map((product, index) => (
+            <div key={index} className="p-4 shadow-md">
               <Link href={`/products/${product.id}`}>
                 <Image
                   src={

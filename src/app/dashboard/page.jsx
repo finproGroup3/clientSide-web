@@ -67,7 +67,8 @@ function Dashboard() {
     };
     fetchPromos();
   }, []);
-  localStorage.setItem('isLoggedIn', false);
+  // localStorage.setItem('isLoggedIn', false);
+  
   const handleLogin = async () => {
     try {
       const response = await axios.post('http://localhost:3000/users/login', {
@@ -78,11 +79,12 @@ function Dashboard() {
       localStorage.setItem('token', response.data.token);
       console.log(response.data.data.Cart.id);
       localStorage.setItem('cartId', response.data.data.Cart.id);
-      localStorage.setItem('isLoggedIn', false);
+      // localStorage.setItem('isLoggedIn', false);
       setIsLoggedIn(false);
       handleCloseDialogs();
     } catch (error) {
       // Handle login error here
+      console.log(error)
       console.error('Login error:', error.response.data);
     }
   };
@@ -281,7 +283,7 @@ function Dashboard() {
           <div>
             <div className="flex mt-4 mx-4">
               {promos[0]?.Products.map((product) => (
-                <div key={promos[0].id} className={`w-1/3 mx-3 relative`}>
+                <div key={product.id} className={`w-1/3 mx-3 relative`}>
                   <Image
                     src={`http://localhost:3000/uploads/productImage/${product.ProductGalleries[0].imageUrl}`}
                     alt={`Promo Image - ${promos[0].code}`}

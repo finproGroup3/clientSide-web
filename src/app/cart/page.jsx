@@ -5,6 +5,8 @@ import Image from "next/image";
 import React from "react";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import Listcart from "@/components/Listcart/Listcart";
+import { List } from "antd";
 
 export default function Cart() {
   const [isSignInDialogOpen, setSignInDialogOpen] = useState(false);
@@ -13,15 +15,28 @@ export default function Cart() {
   const [selectedCoupon, setSelectedCoupon] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [isAplyed, setIsAplyed] = useState(false);
+  const [cart, setCart] = useState({});
+  const [appliedDiscount, setAppliedDiscount] = useState(0);
+  const [selectedProduct, setSelectedProduct] = useState({});
 
-  const addToCart = async (productId) => {
+  const fetchCart = async () => {
     try {
-      const cartId = "ganti_dengan_id_cart";
+      const cartId = localStorage.getItem("cartId");
+      const response = await axios.get(`http://localhost:3000/cart/${cartId}`);
+      setCart(response.data.data);
+      console.log(response.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
+  const addToCart = async () => {
+    try {
+      const cartId = localStorage.getItem("cartId");
       const response = await axios.post(
-        `http://localhost:3000/cart/1/product`,
+        `http://localhost:3000/cart/${cartId}/product`,
         {
-          productId: productId,
+          productId: selectedProduct.id,
           quantity: quantity,
         }
       );
@@ -32,55 +47,20 @@ export default function Cart() {
     }
   };
 
-
-  const handleChangeQuantity = () => {
-    setSignInDialogOpen(true);
-  };
-
-  const handleBackdropClick = () => {
-    setSignInDialogOpen(false);
-  };
-
-  const handleModalClick = (e) => {
-    e.stopPropagation();
-  };
-
   const fetchPromos = async () => {
     try {
-      // Retrieve the token from localStorage
       const storedToken = localStorage.getItem("token");
-
-      // Make the Axios request with the token in the Authorization header
       const response = await axios.get("http://localhost:3000/promo", {
         headers: {
           Authorization: `Bearer ${storedToken}`,
         },
       });
-
-      // Set the promos state with the data from the response
       const promoProduct = response.data.data;
       setPromos(promoProduct);
-      console.log(promoProduct);
     } catch (error) {
       console.error("Error fetching promo data:", error);
     }
   };
-
-  // Call fetchPromos when the component mounts
-  useEffect(() => {
-    fetchPromos();
-  }, []);
-
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
-  };
-
-  const selectCoupon = (coupon) => {
-    setSelectedCoupon(coupon);
-    setIsOpen(false);
-  };
-
-  const [appliedDiscount, setAppliedDiscount] = useState(0);
 
   const applyPromo = (promoCode) => {
     const appliedPromo = promos.find(
@@ -99,11 +79,79 @@ export default function Cart() {
     return discountAmount;
   };
 
-  const formatToRupiah = (amount) => {
-    return new Intl.NumberFormat("id-ID", {
+  function formatToRupiah(amount) {
+    const formattedAmount = new Intl.NumberFormat("id-ID", {
       style: "currency",
       currency: "IDR",
+      minimumFractionDigits: 0,
     }).format(amount);
+
+    return formattedAmount;
+  }
+
+  const getSelectedPromoId = () => {
+    const selectedPromo = promos.find(
+      (promo) => promo.description === selectedCoupon
+    );
+
+    return selectedPromo ? selectedPromo.id : null;
+  };
+
+  const addPromoToCart = async () => {
+    try {
+      const promoId = getSelectedPromoId();
+      if (!promoId) {
+        console.error("Selected promo not found");
+        return;
+      }
+
+      const cartId = localStorage.getItem("cartId");
+      const response = await axios.post(
+        `http://localhost:3000/cart/${cartId}/promo`,
+        {
+          promoId: promoId,
+        }
+      );
+      console.log("Promo ditambahkan ke keranjang:", response.data);
+      console.log(promoId);
+    } catch (error) {
+      console.error("Error menambahkan promo ke keranjang:", error);
+    }
+  };
+
+  const handleChangeQuantity = (product) => {
+    setSelectedProduct(product);
+    setSignInDialogOpen(true);
+  };
+
+  const handleBackdropClick = () => {
+    setSignInDialogOpen(false);
+  };
+
+  const handleModalClick = (e) => {
+    e.stopPropagation();
+  };
+
+  useEffect(() => {
+    fetchCart();
+    fetchPromos();
+  }, []);
+
+  useEffect(() => {
+    fetchCart();
+  }, [quantity, selectedProduct, cart.promoId]);
+
+  useEffect(() => {
+    fetchPromos();
+  }, []);
+
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const selectCoupon = (coupon) => {
+    setSelectedCoupon(coupon);
+    setIsOpen(false);
   };
 
   return (
@@ -146,7 +194,7 @@ export default function Cart() {
                 <button
                   class="block w-full select-none rounded-lg bg-gradient-to-tr from-blue-500 to-blue-600 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                   type="button"
-                  onClick={() => addToCart(1)}
+                  onClick={() => addToCart()}
                 >
                   Done
                 </button>
@@ -157,50 +205,22 @@ export default function Cart() {
         {/* modal end */}
 
         <h1 className="text-2xl text-black font-bold place-content-start mb-5">
-          My Chart(3)
+          My Chart({cart.CartProducts?.length})
         </h1>
+
         {/* Cart */}
         <div className="flex flex-row justify-center gap-4">
           <div className=" bg-white border-2 float-left w-[80%] rounded-xl shadow-lg max-w-full">
-            <div className="flex flex-row justify-between m-4">
-              <div className="flex flex-row gap-3">
-                <Image
-                  src="/next.svg"
-                  alt=""
-                  width={100}
-                  height={100}
-                  className="border  p-2 h-20 rounded"
+            {cart.CartProducts?.map((product, index) => {
+              return (
+                <Listcart
+                  key={index}
+                  product={product}
+                  handleChangeQuantity={handleChangeQuantity}
                 />
-                <ul className="flex flex-col font-semibold">
-                  <li className="font-bold text-lg text-black">Kaos</li>
-                  <li>
-                    weight: <span>60gr</span>
-                  </li>
-                </ul>
-              </div>
-              <div className="flex flex-col content-center items-end">
-                <h2 className="mb-4 font-bold text-black">Rp 70.000</h2>
-                <div
-                  className="flex items-center"
-                  onClick={handleChangeQuantity}
-                >
-                  <button className="border-2 rounded p-2 mr-3 shadow">
-                    <Image
-                      src={"/images/edit.svg"}
-                      alt=""
-                      width={20}
-                      height={20}
-                    ></Image>
-                  </button>
-                  <h2 className="font-semibold ">Quantity : {quantity}</h2>
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-row gap-2 text-sm font-semibold ml-32">
-              <button className="bg-white border hover:bg-red-500 hover:text-white text-red-500 px-3 py-1 rounded-md">
-                Remove
-              </button>
-            </div>
+              );
+            })}
+
             <div className="flex flex-row justify-between p-4">
               <button className="bg-blue-500 border hover:bg-blue-700   text-white px-3 py-1 rounded-md">
                 <Link href="/">
@@ -217,7 +237,7 @@ export default function Cart() {
           </div>
 
           {/* Pembayaran */}
-          <div className="border-1 w-[20%] flex flex-col gap-2 ">
+          <div className="border-1 w-[30%] flex flex-col gap-2 ">
             <div className="bg-white px-4 pb-6 pt-2 flex flex-col rounded-xl shadow-lg w-full">
               <div className="font-semibold">
                 <p className="m-3">Have a coupon?</p>
@@ -250,13 +270,18 @@ export default function Cart() {
                 <button
                   type="button"
                   className="border-2 rounded-lg font-semibold w-full mt-3 py-1 px-4 text-blue-500 border-slate-200 hover:bg-blue-500 hover:text-white focus:outline-none focus:ring focus:border-blue-300"
-                  onClick={() => applyPromo(selectedCoupon)}
+                  onClick={() => {
+                    applyPromo(selectedCoupon);
+                    addPromoToCart();
+                  }}
                 >
                   Apply
                 </button>
               </div>
               {isAplyed === true ? (
-                <p className="text-green-500">{selectedCoupon} applied, Discount : {appliedDiscount}%</p>
+                <p className="text-green-500">
+                  {selectedCoupon} applied, Discount : {appliedDiscount}%
+                </p>
               ) : (
                 ""
               )}
@@ -267,22 +292,33 @@ export default function Cart() {
                   <li className="flex flex-row justify-between">
                     {" "}
                     <span>Subtotal:</span>
-                    <span>Rp. 70000</span>
+                    <span>{formatToRupiah(cart.totalPrice)}</span>
                   </li>
-                    {isAplyed === true ? (
                   <li className="flex flex-row justify-between">
                     {" "}
-                    <span>Discount:</span>
-                      <p className="text-green-500">
-                      {formatToRupiah(calculateDiscount(70000, appliedDiscount))}
-                      </p>
+                    <span>discout affiliate:</span>
+                    <span className="text-red-500">
+                      -{formatToRupiah(cart.totalAffiliate)}
+                    </span>
                   </li>
-                    ) : (
-                      ""
-                    )}
+                  {isAplyed === true ? (
+                    <li className="flex flex-row justify-between">
+                      {" "}
+                      <span>Discount:</span>
+                      <p className="text-red-500">
+                        -
+                        {formatToRupiah(
+                          calculateDiscount(cart.totalPrice, appliedDiscount)
+                        )}
+                      </p>
+                    </li>
+                  ) : (
+                    ""
+                  )}
                   <hr />
                   <li className="flex flex-row justify-between font-bold mt-5 text-black text-xl">
-                    <span>Total:</span> <span>Rp 170.000</span>
+                    <span>Total:</span>{" "}
+                    <span>{formatToRupiah(cart.nettPrice)}</span>
                   </li>
                 </ul>
                 <button

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
@@ -13,13 +13,13 @@ import {
   Input,
   Icon,
 } from "@material-tailwind/react";
-import axios from 'axios';
+import axios from "axios";
 
 function Dashboard() {
   const [signInOpen, setSignInOpen] = React.useState(false);
   const [signUpOpen, setSignUpOpen] = React.useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -42,19 +42,18 @@ function Dashboard() {
 
   useEffect(() => {
     // Retrieve isLoggedIn value from localStorage
-    const storedIsLoggedIn = localStorage.getItem('isLoggedIn');
+    const storedIsLoggedIn = localStorage.getItem("isLoggedIn");
 
     // If storedIsLoggedIn exists and is true, set isLoggedIn state to true
-    if (storedIsLoggedIn && storedIsLoggedIn === 'true') {
+    if (storedIsLoggedIn && storedIsLoggedIn === "true") {
       setIsLoggedIn(true);
     }
   }, []);
   useEffect(() => {
     const fetchPromos = async () => {
       try {
-        const storedToken = localStorage.getItem('token')
-        console.log(storedToken);
-        const response = await axios.get('http://localhost:3000/promo/', {
+        const storedToken = localStorage.getItem("token");
+        const response = await axios.get("http://localhost:3000/promo/", {
           headers: {
             Authorization: `Bearer ${storedToken}`,
           },
@@ -62,30 +61,30 @@ function Dashboard() {
         const promoProduct = response.data.data;
         setPromos(promoProduct);
       } catch (error) {
-        console.error('Error fetching promo data:', error);
+        console.error("Error fetching promo data:", error);
       }
     };
     fetchPromos();
   }, []);
   // localStorage.setItem('isLoggedIn', false);
-  
+
   const handleLogin = async () => {
     try {
-      const response = await axios.post('http://localhost:3000/users/login', {
+      const response = await axios.post("http://localhost:3000/users/login", {
         email,
-        password
+        password,
       });
       // Handle successful login response here
-      localStorage.setItem('token', response.data.token);
+      localStorage.setItem("token", response.data.token);
       console.log(response.data.data.Cart.id);
-      localStorage.setItem('cartId', response.data.data.Cart.id);
+      localStorage.setItem("cartId", response.data.data.Cart.id);
       // localStorage.setItem('isLoggedIn', false);
       setIsLoggedIn(false);
       handleCloseDialogs();
     } catch (error) {
       // Handle login error here
-      console.log(error)
-      console.error('Login error:', error.response.data);
+      console.log(error);
+      console.error("Login error:", error.response.data);
     }
   };
 
@@ -237,7 +236,6 @@ function Dashboard() {
                 <span className="ml-2 font-semibold text-black">
                   Hi, user let&apos;s get started
                 </span>
-
               </div>
               <button
                 onClick={handleSignUpOpen}
@@ -277,30 +275,38 @@ function Dashboard() {
       <div className="border mt-4 bg-white mx-32 rounded shadow-lg relative">
         <div className="mt-4">
           <div>
-            <h1 className="text-center font-bold text-lg text-black">Limited Promo</h1>
+            <h1 className="text-center font-bold text-lg text-black">
+              Limited Promo
+            </h1>
             <h1 className="text-center text-slate-500">Get Your Item Now!</h1>
           </div>
           <div>
             <div className="flex mt-4 mx-4">
               {promos[0]?.Products.map((product) => (
                 <div key={product.id} className={`w-1/3 mx-3 relative`}>
-                  <Image
-                    src={`http://localhost:3000/uploads/productImage/${product.ProductGalleries[0].imageUrl}`}
-                    alt={`Promo Image - ${promos[0].code}`}
-                    width={80}
-                    height={80}
-                    className="rounded-lg object-cover w-full h-60"
-                  />
-                  <div className="absolute top-0 left-0 text-left p-2">
-                    <p className="text-red-500 w-max rounded-lg py-1 bg-opacity-25 px-2 font-bold text-xl bg-white">
-                      -{promos[0].percentage}%
-                    </p>
-                  </div>
-                  <div className="absolute bottom-0 left-0 text-left py-2 px-5 my-3 bg-opacity-50 rounded-r-xl bg-white">
-                    <p className="text-black text-xl font-bold">
-                      {product.name}
-                    </p>
-                  </div>
+                  <Link href={`/products/${product.id}`}>
+                    <Image
+                      src={
+                        product.ProductGalleries[0]?.imageUrl
+                          ? `http://localhost:3000/uploads/productImage/${product.ProductGalleries[0].imageUrl}`
+                          : defaultImage // Fallback image
+                      }
+                      alt={`Promo Image - ${promos[0].code}`}
+                      width={80}
+                      height={80}
+                      className="rounded-lg object-cover w-full h-60"
+                    />
+                    <div className="absolute top-0 left-0 text-left p-2">
+                      <p className="text-red-500 w-max rounded-lg py-1 bg-opacity-25 px-2 font-bold text-xl bg-white">
+                        -{promos[0].percentage}%
+                      </p>
+                    </div>
+                    <div className="absolute bottom-0 left-0 text-left py-2 px-5 my-3 bg-opacity-50 rounded-r-xl bg-white">
+                      <p className="text-black text-xl font-bold">
+                        {product.name}
+                      </p>
+                    </div>
+                  </Link>
                 </div>
               ))}
             </div>

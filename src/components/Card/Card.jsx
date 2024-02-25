@@ -3,39 +3,36 @@ import Image from "next/image";
 import Link from "next/link";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import defaultImage from '../../../public/images/test-product.jpg'
+import defaultImage from "../../../public/images/test-product.jpg";
 
 function Card() {
   const [isQuantityModalOpen, setQuantityModalOpen] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [products, setProducts] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState({});
 
-  const addToCart = async (productId) => {
+  const addToCart = async () => {
     try {
-      
-      const cartId =  localStorage.getItem('cartId')
+      const cartId = localStorage.getItem("cartId");
 
       const response = await axios.post(
         `http://localhost:3000/cart/${cartId}/product`,
         {
-          productId: productId,
+          productId: selectedProduct.id,
           quantity: quantity,
         }
       );
-      setSignInDialogOpen(false);
+      setQuantityModalOpen(false);
       console.log("Produk ditambahkan ke keranjang:", response.data);
     } catch (error) {
       console.error("Error menambahkan produk ke keranjang:", error);
     }
   };
 
-
-
   useEffect(() => {
-
     const fetchProduct = async () => {
       try {
-        const storedToken = localStorage.getItem('token');
+        const storedToken = localStorage.getItem("token");
         const response = await axios.get("http://localhost:3000/product/", {
           headers: {
             Authorization: `Bearer ${storedToken}`,
@@ -51,7 +48,8 @@ function Card() {
     fetchProduct();
   }, []);
 
-  const handleQuantity = () => {
+  const handleQuantity = (product) => {
+    setSelectedProduct(product);
     setQuantityModalOpen(true);
   };
 
@@ -59,14 +57,14 @@ function Card() {
     setQuantityModalOpen(false);
   };
 
-  const handleModalClick = (e, ) => {
+  const handleModalClick = (e) => {
     e.stopPropagation();
   };
 
   function formatRupiah(amount) {
-    const formattedAmount = new Intl.NumberFormat('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
+    const formattedAmount = new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
       minimumFractionDigits: 0,
     }).format(amount);
 
@@ -111,7 +109,7 @@ function Card() {
               <button
                 class="block w-full select-none rounded-lg bg-gradient-to-tr from-blue-500 to-blue-600 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                 type="button"
-                onClick={() => addToCart(1)}
+                onClick={() => addToCart()}
               >
                 Move To cart
               </button>
@@ -126,43 +124,44 @@ function Card() {
           All Product
         </h1>
         <div className="flex justify-between flex-wrap gap-y-10 bg-white">
-          {products && products.length > 0 && products.map((product, index) => (
-            <div key={index} className="p-4 shadow-md">
-              <Link href={`/products/${product.id}`}>
-                <Image
-                  src={
-                    product.ProductGalleries[0]?.imageUrl
-                      ? `http://localhost:3000/uploads/productImage/${product.ProductGalleries[0].imageUrl}`
-                      : defaultImage // Fallback image
-                  }
-                  alt="Image"
-                  width={250}
-                  height={240}
-                  className="rounded-md object-cover h-64"
-                />
-                <p className="text-black font-bold text-lg text-center mt-4">
-                  {formatRupiah(product.price)}
-                </p>
-                <p className="text-slate-500 text-center font-semibold">
-                  {product.name}
-                </p>
-              </Link>
-              <button
-                onClick={handleQuantity}
-                className="flex items-center mx-auto bg-white mt-3 text-blue-500 border-2 rounded-md border-slate-400 px-4 py-2"
-              >
-                <Image
-                  src="/images/cart-blue.png"
-                  alt="cart"
-                  width={20}
-                  height={50}
-                  className="mr-2"
-                />
-                <span className=" font-semibold">Move to cart</span>
-              </button>
-            </div>
-          ))}
-
+          {products &&
+            products.length > 0 &&
+            products.map((product, index) => (
+              <div key={index} className="p-4 shadow-md">
+                <Link href={`/products/${product.id}`}>
+                  <Image
+                    src={
+                      product.ProductGalleries[0]?.imageUrl
+                        ? `http://localhost:3000/uploads/productImage/${product.ProductGalleries[0].imageUrl}`
+                        : defaultImage // Fallback image
+                    }
+                    alt="Image"
+                    width={250}
+                    height={240}
+                    className="rounded-md object-cover h-64"
+                  />
+                  <p className="text-black font-bold text-lg text-center mt-4">
+                    {formatRupiah(product.price)}
+                  </p>
+                  <p className="text-slate-500 text-center font-semibold">
+                    {product.name}
+                  </p>
+                </Link>
+                <button
+                  onClick={(e) => handleQuantity(product)}
+                  className="flex items-center mx-auto bg-white mt-3 text-blue-500 border-2 rounded-md border-slate-400 px-4 py-2"
+                >
+                  <Image
+                    src="/images/cart-blue.png"
+                    alt="cart"
+                    width={20}
+                    height={50}
+                    className="mr-2"
+                  />
+                  <span className=" font-semibold">Move to cart</span>
+                </button>
+              </div>
+            ))}
         </div>
       </div>
     </div>

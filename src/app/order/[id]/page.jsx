@@ -155,11 +155,11 @@ export default function Page() {
   const renderTabContent = (status) => {
     switch (status) {
       case "accept":
-        return order.status === "accept" ? contentOrder() : null;
+        return order?.status === "accept" ? contentOrder() : null;
       case "pending":
-        return order.status === "pending" ? contentOrder() : null;
+        return order?.status === "pending" ? contentOrder() : null;
       case "rejected":
-        return order.status === "rejected" ? contentOrder() : null;
+        return order?.status === "rejected" ? contentOrder() : null;
       default:
         return null;
     }

@@ -78,6 +78,7 @@ function Dashboard() {
       localStorage.setItem("token", response.data.token);
       console.log(response.data.data.Cart.id);
       localStorage.setItem("cartId", response.data.data.Cart.id);
+      localStorage.setItem("userId", response.data.data.id)
       // localStorage.setItem('isLoggedIn', false);
       setIsLoggedIn(false);
       handleCloseDialogs();

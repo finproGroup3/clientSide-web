@@ -84,6 +84,8 @@ export default function Page() {
     return formattedAmount;
   }
 
+  const idUser = localStorage.getItem("userId");
+
   return (
     <div className="flex mx-20 gap-8 my-8">
       <div className="w-3/4">
@@ -190,11 +192,20 @@ export default function Page() {
                 id=""
                 className="bg-white text-black font-semibold border-2 p-2 rounded"
               >
-                <option value="" className="text-black font-semibold" disabled defaultValue>
+                <option
+                  value=""
+                  className="text-black font-semibold"
+                  disabled
+                  defaultValue
+                >
                   Pilih opsi
                 </option>
-                <option className="text-black font-semibold" value="">JNE</option>
-                <option className="text-black font-semibold" value="">TIKI</option>
+                <option className="text-black font-semibold" value="">
+                  JNE
+                </option>
+                <option className="text-black font-semibold" value="">
+                  TIKI
+                </option>
               </select>
             </div>
             <div className="flex justify-between">
@@ -234,12 +245,14 @@ export default function Page() {
           </div>
         </div>
         <div className="mt-4">
-          <button
-            onClick={handleOrder}
-            className="w-full p-2 bg-blue-500 text-white rounded-md text-xl font-bold"
-          >
-            Order
-          </button>
+          <Link href={`/order/${idUser}`}>
+            <button
+              onClick={handleOrder}
+              className="w-full p-2 bg-blue-500 text-white rounded-md text-xl font-bold"
+            >
+              Order
+            </button>
+          </Link>
         </div>
       </div>
     </div>

@@ -321,12 +321,14 @@ export default function Cart() {
                     <span>{formatToRupiah(cart.nettPrice)}</span>
                   </li>
                 </ul>
-                <button
-                  type="button"
-                  className="bg-green-500 hover:bg-green-600 text-white text-center rounded-lg w-full py-3"
-                >
-                  Checkout
-                </button>
+                <Link href={"/checkout"}>
+                  <button
+                    type="button"
+                    className="bg-green-500 hover:bg-green-600 text-white text-center rounded-lg w-full py-3"
+                  >
+                    Checkout
+                  </button>
+                </Link>
               </div>
             </div>
           </div>

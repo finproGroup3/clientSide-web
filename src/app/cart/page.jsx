@@ -30,18 +30,30 @@ export default function Cart() {
     }
   };
 
-  const addToCart = async () => {
+  const reFetch = async () => {
+    // Add any additional logic you need to fetch updated data from the database
+    await fetchCart();
+  };
+
+  const editQuantityInCart = async () => {
     try {
+      if (!quantity || !selectedProduct.productId) {
+        console.error("Quantity or selected product not set.");
+        return;
+      }
+
       const cartId = localStorage.getItem("cartId");
       const response = await axios.post(
         `http://localhost:3000/cart/${cartId}/product`,
         {
-          productId: selectedProduct.id,
+          productId: selectedProduct.productId,
           quantity: quantity,
         }
       );
+
       setSignInDialogOpen(false);
       console.log("Produk ditambahkan ke keranjang:", response.data);
+      await reFetch();
     } catch (error) {
       console.error("Error menambahkan produk ke keranjang:", error);
     }
@@ -116,6 +128,29 @@ export default function Cart() {
       console.log(promoId);
     } catch (error) {
       console.error("Error menambahkan promo ke keranjang:", error);
+    }
+  };
+
+  const deleteAllProduct = async () => {
+    try {
+      const cartId = localStorage.getItem("cartId");
+      const token = localStorage.getItem("token");
+      const response = await axios.delete(
+        `http://localhost:3000/cart/${cartId}/product/`,
+        {
+          cartId: cartId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      alert("All item has been removed from the cart!");
+      console.log("All product has ben delete ", response.data);
+      await fetchCart();
+    } catch (error) {
+      console.log("error delete all product:", error);
     }
   };
 
@@ -194,7 +229,7 @@ export default function Cart() {
                 <button
                   class="block w-full select-none rounded-lg bg-gradient-to-tr from-blue-500 to-blue-600 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                   type="button"
-                  onClick={() => addToCart()}
+                  onClick={() => editQuantityInCart()}
                 >
                   Done
                 </button>
@@ -217,6 +252,7 @@ export default function Cart() {
                   key={index}
                   product={product}
                   handleChangeQuantity={handleChangeQuantity}
+                  reFetch={reFetch}
                 />
               );
             })}
@@ -230,7 +266,7 @@ export default function Cart() {
                   </div>
                 </Link>
               </button>
-              <button className="text-blue-500 border hover:border-0 hover:bg-red-500 hover:text-white  font-semibold bg-white px-3 py-1 rounded-md">
+              <button onClick={deleteAllProduct} className="text-blue-500 border hover:border-0 hover:bg-red-500 hover:text-white  font-semibold bg-white px-3 py-1 rounded-md">
                 Remove all
               </button>
             </div>

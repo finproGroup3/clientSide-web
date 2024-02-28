@@ -16,14 +16,12 @@ function Profile() {
     });
   
     useEffect(() => {
-      const pathname = window.location.pathname;
-      const idFromPath = pathname.substring(pathname.lastIndexOf("/") + 1);
-  
       const fetchUser = async () => {
         try {
           const storedToken = localStorage.getItem("token");
+          const userId = localStorage.getItem('userId')
           const response = await axios.get(
-            `http://localhost:3000/users/${idFromPath}`,
+            `http://localhost:3000/users/${userId}`,
             {
               headers: {
                 Authorization: `Bearer ${storedToken}`,
@@ -32,14 +30,19 @@ function Profile() {
           );
           setUser(response.data.data);
           console.log(response.data.data);
+          setEditedUser({
+            username: response.data.data.username,
+            email: response.data.data.email,
+            address: response.data.data.address,
+            city: '',
+            province: '',
+            profilePicture: null,
+          });
         } catch (error) {
           console.error("Error fetching user :", error);
         }
       };
-  
-      if (idFromPath) {
-        fetchUser();
-      }
+      fetchUser()
     }, []);
   
     const handleFileChange = (e) => {

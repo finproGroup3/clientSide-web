@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import Image from "next/image";
 import axios from "axios";
 
-export default function Listcart({ handleChangeQuantity, product }) {
+export default function Listcart({ handleChangeQuantity, product, reFetch }) {
 
   function formatRupiah(amount) {
     const formattedAmount = new Intl.NumberFormat("id-ID", {
@@ -20,6 +20,7 @@ export default function Listcart({ handleChangeQuantity, product }) {
       const response = await axios.delete(`http://localhost:3000/cart/${cartId}/product/${product.Product.id}`);
       // Jika penghapusan berhasil, tampilkan alert
       alert("Item has been removed from the cart!");
+      await reFetch()
     } catch (error) {
       console.log(error);
     }

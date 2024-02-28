@@ -5,89 +5,92 @@ import axios from "axios";
 import Link from "next/link";
 
 function Profile() {
-    const [user, setUser] = useState({});
-    const [editedUser, setEditedUser] = useState({
-      username: '',
-      email: '',
-      address: '',
-      city: '',
-      province: '',
-      profilePicture: null,
-    });
-  
-    useEffect(() => {
-      const pathname = window.location.pathname;
-      const idFromPath = pathname.substring(pathname.lastIndexOf("/") + 1);
-  
-      const fetchUser = async () => {
-        try {
-          const storedToken = localStorage.getItem("token");
-          const response = await axios.get(
-            `http://localhost:3000/users/${idFromPath}`,
-            {
-              headers: {
-                Authorization: `Bearer ${storedToken}`,
-              },
-            }
-          );
-          setUser(response.data.data);
-          console.log(response.data.data);
-        } catch (error) {
-          console.error("Error fetching user :", error);
-        }
-      };
-  
-      if (idFromPath) {
-        fetchUser();
-      }
-    }, []);
-  
-    const handleFileChange = (e) => {
-      const file = e.target.files[0];
-      setEditedUser((prevUser) => ({
-        ...prevUser,
-        profilePicture: file,
-      }));
-    };
-  
-    const handleChangeData = (e) => {
-      const { name, value } = e.target;
-      setEditedUser((prevUser) => ({
-        ...prevUser,
-        [name]: value,
-      }));
-    };
-  
-    const handleEdit = async () => {
-      const token = localStorage.getItem("token");
-      const idFromPath = window.location.pathname.substring(
-        window.location.pathname.lastIndexOf("/") + 1
-      );
-  
+  const [user, setUser] = useState({});
+  const [editedUser, setEditedUser] = useState({
+    username: '',
+    email: '',
+    address: '',
+    city: '',
+    province: '',
+    profilePicture: null,
+  });
+
+  useEffect(() => {
+    const fetchUser = async () => {
       try {
-        const formData = new FormData();
-        formData.append("username", editedUser.username);
-        formData.append("email", editedUser.email);
-        formData.append("address", editedUser.address);
-        formData.append("city", editedUser.city);
-        formData.append("province", editedUser.province);
-        formData.append("profilePicture", editedUser.profilePicture);
-        const response = await axios.put(
-          `http://localhost:3000/users/${idFromPath}/edit`,
-          formData,
+        const storedToken = localStorage.getItem("token");
+        const userId = localStorage.getItem("userId");
+        const response = await axios.get(
+          `http://localhost:3000/users/${userId}`,
           {
             headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${storedToken}`,
             },
           }
         );
-  
-        console.log(response.data);
+        setUser(response.data.data);
+        console.log(response.data.data);
+        setEditedUser({
+          username: response.data.data.username,
+          email: response.data.data.email,
+          address: response.data.data.address,
+          city: '',
+          province: '',
+          profilePicture: null,
+        });
       } catch (error) {
-        console.error("Error updating user:", error);
+        console.error("Error fetching user :", error);
       }
     };
+    fetchUser();
+  }, []);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setEditedUser((prevUser) => ({
+      ...prevUser,
+      profilePicture: file,
+    }));
+  };
+
+  const handleChangeData = (e) => {
+    const { name, value } = e.target;
+    setEditedUser((prevUser) => ({
+      ...prevUser,
+      [name]: value,
+    }));
+  };
+
+  const handleEdit = async () => {
+    const token = localStorage.getItem("token");
+    const idFromPath = window.location.pathname.substring(
+      window.location.pathname.lastIndexOf("/") + 1
+    );
+
+    try {
+      const formData = new FormData();
+      formData.append("username", editedUser.username);
+      formData.append("email", editedUser.email);
+      formData.append("address", editedUser.address);
+      formData.append("city", editedUser.city);
+      formData.append("province", editedUser.province);
+      formData.append("profilePicture", editedUser.profilePicture);
+      const response = await axios.put(
+        `http://localhost:3000/users/${idFromPath}/edit`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error updating user:", error);
+    }
+  };
 
   return (
     <div className="border mt-4 bg-white mx-32 rounded shadow-lg relative p-16">

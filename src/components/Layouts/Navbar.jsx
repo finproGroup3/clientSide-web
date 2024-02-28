@@ -4,7 +4,7 @@ import Image from "next/image";
 
 const Navbar = () => {
   return (
-    <nav className="bg-white text-black py-4">
+    <nav className="bg-white text-black py-4 sticky top-0 z-50">
       <div className="container mx-auto flex justify-between items-center">
         <div className="flex items-center">
           <Link href="/">
@@ -75,8 +75,20 @@ const Navbar = () => {
               <span>Profile</span>
             </div>
           </Link>
-          <Link href="/cart">
+          <Link href="/order">
             <div className="ml-4 text-slate-500 text-sm font-semibold flex flex-col items-center">
+              <Image
+                src="/images/order.png"
+                width={50}
+                height={50}
+                alt="Cart"
+                className="w-5 h-5 mb-1"
+              />
+              <span>My Order</span>
+            </div>
+          </Link>
+          <Link href="/cart">
+            <div className="ml-6 text-slate-500 text-sm font-semibold flex flex-col items-center">
               <Image
                 src="/images/cart.png"
                 width={50}

@@ -1,15 +1,20 @@
-"use client";
+"use client"
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import defaultImage from "../../../public/images/test-product.jpg";
+import defaultImage from "../../../public/images/test-product.jpg"; // Import defaultImage here
 
 function Card() {
   const [isQuantityModalOpen, setQuantityModalOpen] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState({});
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
+  const limitPerPage = 8;
 
   const addToCart = async () => {
     try {
@@ -23,9 +28,9 @@ function Card() {
         }
       );
       setQuantityModalOpen(false);
-      console.log("Produk ditambahkan ke keranjang:", response.data);
+      console.log("Product added to cart:", response.data);
     } catch (error) {
-      console.error("Error menambahkan produk ke keranjang:", error);
+      console.error("Error adding product to cart:", error);
     }
   };
 
@@ -39,9 +44,10 @@ function Card() {
           },
         });
         const product = response.data.data;
+        setTotalPages(Math.ceil(product.length / limitPerPage));
         setProducts(product);
       } catch (error) {
-        console.error("error fetching product", error);
+        console.error("Error fetching product", error);
       }
     };
 
@@ -70,6 +76,11 @@ function Card() {
 
     return formattedAmount;
   }
+
+  const indexOfLastProduct = currentPage * limitPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - limitPerPage;
+  const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
+
   return (
     <div className="bg-white pt-4">
       {/* modal start */}
@@ -124,16 +135,16 @@ function Card() {
           All Product
         </h1>
         <div className="flex justify-between flex-wrap gap-y-10 bg-white">
-          {products &&
-            products.length > 0 &&
-            products.map((product, index) => (
+          {currentProducts &&
+            currentProducts.length > 0 &&
+            currentProducts.map((product, index) => (
               <div key={index} className="p-4 shadow-md">
                 <Link href={`/products/${product.id}`}>
                   <Image
                     src={
                       product.ProductGalleries[0]?.imageUrl
                         ? `http://localhost:3000/uploads/productImage/${product.ProductGalleries[0].imageUrl}`
-                        : defaultImage // Fallback image
+                        : { defaultImage } // Use defaultImage here
                     }
                     alt="Image"
                     width={250}
@@ -164,6 +175,35 @@ function Card() {
             ))}
         </div>
       </div>
+      {/* Pagination */}
+      <div className="flex justify-center mt-16">
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-l"
+          onClick={() => setCurrentPage(currentPage - 1)}
+          disabled={currentPage === 1}
+        >
+          Previous
+        </button>
+        {/* Numbered buttons */}
+        {Array.from({ length: totalPages }, (_, i) => (
+          <button
+            key={i + 1}
+            className={`mx-2 py-2 px-4 rounded ${i + 1 === currentPage ? "bg-blue-700 text-white" : "bg-blue-500 text-blue-900"
+              }`}
+            onClick={() => setCurrentPage(i + 1)}
+          >
+            {i + 1}
+          </button>
+        ))}
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-r"
+          onClick={() => setCurrentPage(currentPage + 1)}
+          disabled={currentPage === totalPages}
+        >
+          Next
+        </button>
+      </div>
+
     </div>
   );
 }

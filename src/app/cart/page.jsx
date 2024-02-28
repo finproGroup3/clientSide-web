@@ -205,7 +205,7 @@ export default function Cart() {
         {/* modal end */}
 
         <h1 className="text-2xl text-black font-bold place-content-start mb-5">
-          My Chart({cart.CartProducts?.length})
+          My Cart({cart.CartProducts?.length})
         </h1>
 
         {/* Cart */}

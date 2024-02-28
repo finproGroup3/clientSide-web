@@ -4,11 +4,13 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import Swal from "sweetalert2";
 
 export default function Page() {
   const [data, setData] = useState([]);
   const [dataUser, setDataUser] = useState([]);
-
+  const router = useRouter();
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -68,6 +70,16 @@ export default function Page() {
           },
         }
       );
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "Your order has been placed successfully!",
+      }).then((result) => {
+        // If "OK" is clicked on the alert, navigate to "/"
+        if (result.isConfirmed || result.isDismissed) {
+          router.push("/");
+        }
+      });
       console.log("produk ditambahkan ke Order", response.data);
     } catch (error) {
       console.log("produk tidak ditambahkan karena error:", error);
@@ -245,14 +257,14 @@ export default function Page() {
           </div>
         </div>
         <div className="mt-4">
-          <Link href={`/order/${idUser}`}>
-            <button
-              onClick={handleOrder}
-              className="w-full p-2 bg-blue-500 text-white rounded-md text-xl font-bold"
-            >
-              Order
-            </button>
-          </Link>
+
+          <button
+            onClick={handleOrder}
+            className="w-full p-2 bg-blue-500 text-white rounded-md text-xl font-bold"
+          >
+            Order
+          </button>
+
         </div>
       </div>
     </div>

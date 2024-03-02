@@ -131,8 +131,8 @@ function Card() {
       {/* modal end */}
 
       <div className="bg-white mx-32 my-4 rounded border shadow-lg p-5">
-        <h1 className="ml-5 font-semibold text-lg text-black my-6">
-          All Product
+        <h1 className="ml-5 font-semibold text-2xl text-black my-6">
+          All Products
         </h1>
         <div className="flex justify-between flex-wrap gap-y-10 bg-white">
           {currentProducts &&

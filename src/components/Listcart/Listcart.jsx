@@ -1,8 +1,10 @@
+"use client"
 import React, { useEffect } from "react";
 import Image from "next/image";
 import axios from "axios";
+import Swal from 'sweetalert2';
 
-export default function Listcart({ handleChangeQuantity, product }) {
+export default function Listcart({ handleChangeQuantity, product, reFetch }) {
 
   function formatRupiah(amount) {
     const formattedAmount = new Intl.NumberFormat("id-ID", {
@@ -16,19 +18,43 @@ export default function Listcart({ handleChangeQuantity, product }) {
 
   const deleteCart = async () => {
     try {
+      console.log(product);
       const cartId = localStorage.getItem("cartId");
-      const response = await axios.delete(`http://localhost:3000/cart/${cartId}/product/${product.Product.id}`);
-      // Jika penghapusan berhasil, tampilkan alert
-      alert("Item has been removed from the cart!");
+
+      // Show confirmation dialog
+      const confirmResult = await Swal.fire({
+        title: 'Are you sure?',
+        text: 'This action will remove the item from the cart.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, remove it!'
+      });
+
+      if (confirmResult.isConfirmed) {
+        // User confirmed, proceed with deletion
+        const response = await axios.delete(`http://localhost:3000/cart/${cartId}/product/${product.Product.id}`);
+
+        // Show success message
+        await Swal.fire({
+          icon: 'success',
+          title: 'Success',
+          text: 'Item has been removed from the cart!',
+        });
+
+        // Fetch updated cart data
+        await reFetch();
+      }
     } catch (error) {
       console.log(error);
     }
   };
 
-  
+
+
   useEffect(() => {
-   
-  }, []); 
+  }, [product]);
 
   return (
     <div className="flex flex-row justify-between m-4">
@@ -43,7 +69,7 @@ export default function Listcart({ handleChangeQuantity, product }) {
         <ul className="flex flex-col font-semibold">
           <li className="font-bold text-lg text-black">{product.Product.name}</li>
           <li>
-            weight: <span>{product.Product.weight}</span>
+            weight: <span>{product.Product.weight} g</span>
           </li>
         </ul>
       </div>

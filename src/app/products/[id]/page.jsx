@@ -10,10 +10,10 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState(0);
   const [product, setProduct] = useState(null);
-
+  const cartId = localStorage.getItem("cartId");
+  const pathname = window.location.pathname;
+  const idFromPath = pathname.substring(pathname.lastIndexOf("/") + 1);
   useEffect(() => {
-    const pathname = window.location.pathname;
-    const idFromPath = pathname.substring(pathname.lastIndexOf("/") + 1);
 
     const fetchProductDetail = async () => {
       try {
@@ -39,21 +39,24 @@ const ProductDetail = () => {
 
   const addToCart = async (productId) => {
     try {
-      const cartId = "ganti_dengan_id_cart";
+      // Parse productId to integer
+      const parsedProductId = parseInt(productId, 10);
+      const parsedQuantity = parseInt(quantity, 10);
 
       const response = await axios.post(
-        `http://localhost:3000/cart/1/product`,
+        `http://localhost:3000/cart/${cartId}/product`,
         {
-          productId: productId,
-          quantity: quantity,
+          productId: parsedProductId,
+          quantity: parsedQuantity,
         }
       );
-      setSignInDialogOpen(false);
+      setIsQuantityModalOpen(false);
       console.log("Produk ditambahkan ke keranjang:", response.data);
     } catch (error) {
       console.error("Error menambahkan produk ke keranjang:", error);
     }
   };
+
 
   const handleClick = (index) => {
     setActiveTab(index);
@@ -82,10 +85,24 @@ const ProductDetail = () => {
   const handleModalClick = (e) => {
     e.stopPropagation();
   };
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (product === null) {
+        window.location.reload();
+      }
+    }, 500);
 
+    // Clean up the timeout to avoid memory leaks
+    return () => clearTimeout(timeoutId);
+  }, [product]);
 
   return (
     <section className="bg-white p-1 m-20 rounded-l grid">
+      {product === null && (
+        <div className="flex items-center justify-center h-screen">
+          <p className="text-xl font-semibold text-gray-700">Loading...</p>
+        </div>
+      )}
 
       {/* modal start */}
       {isQuantityModalOpen && (
@@ -97,7 +114,7 @@ const ProductDetail = () => {
         >
           <div
             data-dialog="sign-in-dialog"
-            class="relative mx-auto flex w-full max-w-[24rem] flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-md"
+            className="relative mx-auto flex w-full max-w-[24rem] flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-md"
             onClick={handleModalClick}
           >
             <div class="flex flex-col gap-4 p-6">
@@ -124,7 +141,7 @@ const ProductDetail = () => {
               <button
                 class="block w-full select-none rounded-lg bg-gradient-to-tr from-blue-500 to-blue-600 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                 type="button"
-                onClick={() => addToCart(1)}
+                onClick={() => addToCart(idFromPath)}
               >
                 Move To cart
               </button>
@@ -136,7 +153,7 @@ const ProductDetail = () => {
 
       <div className="flex justify-evenly p-5 space-x-10 space-y-10">
         <div>
-        <aside>
+          <aside>
             <div className="p-5 text-center mb-5">
               <div className="bg-white items-center flex flex-col space-y-2">
                 <div className="shadow-lg rounded-md w-auto">
@@ -193,7 +210,10 @@ const ProductDetail = () => {
             {formatRupiah(product?.price)}
           </p>
           <div className="flex flex-wrap gap-2 mb-5">
-            <button onClick={handleQuantity} className="px-4 py-1 inline-block text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700">
+            <button
+              onClick={handleQuantity}
+              className="px-4 py-1 inline-block text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700"
+            >
               Checkout
             </button>
           </div>

@@ -4,7 +4,7 @@ function page() {
   return (
     <div>
       <Dashboard />
-
+      <Card />
     </div>
   )
 }

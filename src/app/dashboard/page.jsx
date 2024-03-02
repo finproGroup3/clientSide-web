@@ -36,6 +36,7 @@ function Icon() {
 function Dashboard() {
   const [signInOpen, setSignInOpen] = React.useState(false);
   const [signUpOpen, setSignUpOpen] = React.useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem("isLoggedIn"));
   const [value, setValue] = useState("");
   const [valueCity, setValueCity] = useState("");
   const [cities, setCities] = useState([]);
@@ -51,7 +52,23 @@ function Dashboard() {
     referralCode: "",
   });
   const [categories, setCategories] = useState([]);
+  useEffect(() => {
+    setIsLoggedIn(localStorage.getItem("isLoggedIn"));
+  }, []);
 
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setIsLoggedIn(localStorage.getItem("isLoggedIn"));
+    };
+
+    // Add event listener for storage change
+    window.addEventListener("storage", handleStorageChange);
+
+    // Remove event listener on component unmount
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
   const fetchCategories = async () => {
     try {
       const response = await axios.get("http://localhost:3000/category");
@@ -143,6 +160,7 @@ function Dashboard() {
         },
       });
       const promoProduct = response.data.data;
+      console.log(response.data.data);
       setPromos(promoProduct);
     } catch (error) {
       console.error("Error fetching promo data:", error);
@@ -167,6 +185,7 @@ function Dashboard() {
       localStorage.setItem("referralCode", response.data.data.privateReferralCode.code);
       localStorage.setItem("userId", response.data.data.id);
       localStorage.setItem('isLoggedIn', true);
+      window.location.reload();
       handleCloseDialogs();
     } catch (error) {
       // Handle login error here
@@ -420,7 +439,7 @@ function Dashboard() {
         </Card>
       </Dialog>
       {/* Hero section start */}
-      <div className="border mt-4 bg-white mx-32 rounded shadow-lg relative flex items-center">
+      <div className="border mt-4 bg-white mx-32 rounded shadow-lg relative flex">
         <div className="relative my-4 ml-4">
           <Image
             src="/images/banner-board.png"
@@ -443,7 +462,7 @@ function Dashboard() {
           </div>
         </div>
         <div className="m-4 relative">
-          {localStorage.getItem("isLoggedIn") === "true" && (
+          {!isLoggedIn && (
             <div className="bg-blue-100 rounded pt-2 px-4">
               <div className="flex items-center mb-2">
                 <Image
@@ -471,8 +490,6 @@ function Dashboard() {
               </button>
             </div>
           )}
-
-
           <div className="my-2">
             <p className="px-2 py-4 font-semibold bg-orange-500 rounded text-white">
               Share Your Affiliate Code to Get More Benefit
@@ -504,8 +521,8 @@ function Dashboard() {
             <h1 className="text-center text-slate-500">Get Your Item Now!</h1>
           </div>
           <div>
-            <div className="flex mt-4 mx-4">
-              {promos[0]?.Products.map((product) => (
+            <div className="flex mt-4 mx-4 mb-10">
+              {promos[0]?.Products.slice(0, 5).map((product) => (
                 <div key={product.id} className={`w-1/3 mx-3 relative`}>
                   <Link href={`/products/${product.id}`}>
                     <Image

@@ -6,7 +6,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Listcart from "@/components/Listcart/Listcart";
-import { List } from "antd";
+import Swal from 'sweetalert2';
 
 export default function Cart() {
   const [isSignInDialogOpen, setSignInDialogOpen] = useState(false);
@@ -15,9 +15,11 @@ export default function Cart() {
   const [selectedCoupon, setSelectedCoupon] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [isAplyed, setIsAplyed] = useState(false);
+  const [statusApplied, setStatusApplied] = useState("")
   const [cart, setCart] = useState({});
   const [appliedDiscount, setAppliedDiscount] = useState(0);
   const [selectedProduct, setSelectedProduct] = useState({});
+  const [isEligible, setIsEligible] = useState(true);
 
   const fetchCart = async () => {
     try {
@@ -30,18 +32,30 @@ export default function Cart() {
     }
   };
 
-  const addToCart = async () => {
+  const reFetch = async () => {
+    // Add any additional logic you need to fetch updated data from the database
+    await fetchCart();
+  };
+
+  const editQuantityInCart = async () => {
     try {
+      if (!quantity || !selectedProduct.productId) {
+        console.error("Quantity or selected product not set.");
+        return;
+      }
+
       const cartId = localStorage.getItem("cartId");
       const response = await axios.post(
         `http://localhost:3000/cart/${cartId}/product`,
         {
-          productId: selectedProduct.id,
+          productId: selectedProduct.productId,
           quantity: quantity,
         }
       );
+
       setSignInDialogOpen(false);
       console.log("Produk ditambahkan ke keranjang:", response.data);
+      await reFetch();
     } catch (error) {
       console.error("Error menambahkan produk ke keranjang:", error);
     }
@@ -56,21 +70,13 @@ export default function Cart() {
         },
       });
       const promoProduct = response.data.data;
-      setPromos(promoProduct);
+      // Filter promos with status === "active"
+      const activePromos = promoProduct.filter(promo => promo.isActive === true);
+
+      // Set the state with filtered active promos
+      setPromos(activePromos);
     } catch (error) {
       console.error("Error fetching promo data:", error);
-    }
-  };
-
-  const applyPromo = (promoCode) => {
-    const appliedPromo = promos.find(
-      (promo) => promo.description === promoCode
-    );
-
-    if (appliedPromo) {
-      console.log("Promo Applied:", appliedPromo);
-      setAppliedDiscount(appliedPromo.percentage);
-      setIsAplyed(true);
     }
   };
 
@@ -97,25 +103,84 @@ export default function Cart() {
     return selectedPromo ? selectedPromo.id : null;
   };
 
-  const addPromoToCart = async () => {
+  const addPromoToCart = async (promoId, percentage) => {
     try {
-      const promoId = getSelectedPromoId();
-      if (!promoId) {
-        console.error("Selected promo not found");
-        return;
-      }
-
       const cartId = localStorage.getItem("cartId");
       const response = await axios.post(
         `http://localhost:3000/cart/${cartId}/promo`,
         {
-          promoId: promoId,
-        }
+          promoId
+        }  // Pass promoId as an object
       );
+      fetchCart();
+      setStatusApplied(`${selectedCoupon} applied, Discount: ${percentage}%`)
+      setIsEligible(true)
       console.log("Promo ditambahkan ke keranjang:", response.data);
-      console.log(promoId);
     } catch (error) {
-      console.error("Error menambahkan promo ke keranjang:", error);
+      if (error.response && error.response.data && error.response.data.message) {
+        // Display the error message from the backend response
+        console.error("Error menambahkan promo ke keranjang:", error.response.data.message);
+        setStatusApplied(error.response.data.message)
+        setIsEligible(false)
+      } else {
+        console.error("Error menambahkan promo ke keranjang:", error);
+      }
+    }
+  };
+
+  const applyPromo = (promoCode) => {
+    const appliedPromo = promos.find(
+      (promo) => promo.description === promoCode
+    );
+    addPromoToCart(appliedPromo.id, appliedPromo.percentage)
+    if (appliedPromo) {
+      console.log("Promo Applied:", appliedPromo);
+      setAppliedDiscount(appliedPromo.percentage);
+      setIsAplyed(true);
+    }
+  };
+  const deleteAllProduct = async () => {
+    try {
+      const cartId = localStorage.getItem("cartId");
+      const token = localStorage.getItem("token");
+
+      // Show confirmation dialog
+      const confirmResult = await Swal.fire({
+        title: 'Are you sure?',
+        text: 'This action will remove all items from the cart.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete all items!'
+      });
+
+      if (confirmResult.isConfirmed) {
+        // User confirmed, proceed with deletion
+        const response = await axios.delete(
+          `http://localhost:3000/cart/${cartId}/product/`,
+          {
+            cartId: cartId,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        // Show success message
+        Swal.fire({
+          icon: 'success',
+          title: 'Success',
+          text: 'All items have been removed from the cart!',
+        });
+
+        console.log("All products have been deleted ", response.data);
+        await fetchCart();
+      }
+    } catch (error) {
+      console.log("Error deleting all products:", error);
     }
   };
 
@@ -194,7 +259,7 @@ export default function Cart() {
                 <button
                   class="block w-full select-none rounded-lg bg-gradient-to-tr from-blue-500 to-blue-600 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                   type="button"
-                  onClick={() => addToCart()}
+                  onClick={() => editQuantityInCart()}
                 >
                   Done
                 </button>
@@ -205,7 +270,7 @@ export default function Cart() {
         {/* modal end */}
 
         <h1 className="text-2xl text-black font-bold place-content-start mb-5">
-          My Cart({cart.CartProducts?.length})
+          My Cart ({cart.CartProducts?.length})
         </h1>
 
         {/* Cart */}
@@ -217,6 +282,7 @@ export default function Cart() {
                   key={index}
                   product={product}
                   handleChangeQuantity={handleChangeQuantity}
+                  reFetch={reFetch}
                 />
               );
             })}
@@ -230,7 +296,7 @@ export default function Cart() {
                   </div>
                 </Link>
               </button>
-              <button className="text-blue-500 border hover:border-0 hover:bg-red-500 hover:text-white  font-semibold bg-white px-3 py-1 rounded-md">
+              <button onClick={deleteAllProduct} className="text-blue-500 border hover:border-0 hover:bg-red-500 hover:text-white  font-semibold bg-white px-3 py-1 rounded-md">
                 Remove all
               </button>
             </div>
@@ -272,19 +338,19 @@ export default function Cart() {
                   className="border-2 rounded-lg font-semibold w-full mt-3 py-1 px-4 text-blue-500 border-slate-200 hover:bg-blue-500 hover:text-white focus:outline-none focus:ring focus:border-blue-300"
                   onClick={() => {
                     applyPromo(selectedCoupon);
-                    addPromoToCart();
                   }}
                 >
                   Apply
                 </button>
               </div>
-              {isAplyed === true ? (
-                <p className="text-green-500">
-                  {selectedCoupon} applied, Discount : {appliedDiscount}%
+              {isAplyed ? (
+                <p className={isEligible ? "text-green-500" : "text-red-500"}>
+                  {statusApplied}
                 </p>
               ) : (
                 ""
               )}
+
 
               {/* Menampilkan informasi diskon */}
               <div className="bg-white border-2 px-4 pb-5 rounded-xl shadow-md mt-3">
@@ -294,27 +360,23 @@ export default function Cart() {
                     <span>Subtotal:</span>
                     <span>{formatToRupiah(cart.totalPrice)}</span>
                   </li>
-                  <li className="flex flex-row justify-between">
-                    {" "}
-                    <span>discout affiliate:</span>
-                    <span className="text-red-500">
-                      -{formatToRupiah(cart.totalAffiliate)}
-                    </span>
-                  </li>
-                  {isAplyed === true ? (
+                  {cart.totalAffiliate !== 0 && (
                     <li className="flex flex-row justify-between">
-                      {" "}
-                      <span>Discount:</span>
-                      <p className="text-red-500">
-                        -
-                        {formatToRupiah(
-                          calculateDiscount(cart.totalPrice, appliedDiscount)
-                        )}
-                      </p>
+                      <span>discount affiliate:</span>
+                      <span className="text-red-500">
+                        -{formatToRupiah(cart.totalAffiliate)}
+                      </span>
                     </li>
-                  ) : (
-                    ""
                   )}
+                  {cart.totalDiscount !== 0 && (
+                    <li className="flex flex-row justify-between">
+                      <span>discount discount:</span>
+                      <span className="text-red-500">
+                        -{formatToRupiah(cart.totalDiscount)}
+                      </span>
+                    </li>
+                  )}
+                  <hr />
                   <hr />
                   <li className="flex flex-row justify-between font-bold mt-5 text-black text-xl">
                     <span>Total:</span>{" "}

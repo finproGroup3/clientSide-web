@@ -24,7 +24,7 @@ export default function Cart() {
   const fetchCart = async () => {
     try {
       const cartId = localStorage.getItem("cartId");
-      const response = await axios.get(`http://localhost:3000/cart/${cartId}`);
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_URL_BACKEND}/cart/${cartId}`);
       setCart(response.data.data);
       console.log(response.data.data);
     } catch (error) {
@@ -46,7 +46,7 @@ export default function Cart() {
 
       const cartId = localStorage.getItem("cartId");
       const response = await axios.post(
-        `http://localhost:3000/cart/${cartId}/product`,
+        `${process.env.NEXT_PUBLIC_URL_BACKEND}/cart/${cartId}/product`,
         {
           productId: selectedProduct.productId,
           quantity: quantity,
@@ -64,7 +64,7 @@ export default function Cart() {
   const fetchPromos = async () => {
     try {
       const storedToken = localStorage.getItem("token");
-      const response = await axios.get("http://localhost:3000/promo", {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_URL_BACKEND}/promo`, {
         headers: {
           Authorization: `Bearer ${storedToken}`,
         },
@@ -107,7 +107,7 @@ export default function Cart() {
     try {
       const cartId = localStorage.getItem("cartId");
       const response = await axios.post(
-        `http://localhost:3000/cart/${cartId}/promo`,
+        `${process.env.NEXT_PUBLIC_URL_BACKEND}/cart/${cartId}/promo`,
         {
           promoId
         }  // Pass promoId as an object
@@ -158,7 +158,7 @@ export default function Cart() {
       if (confirmResult.isConfirmed) {
         // User confirmed, proceed with deletion
         const response = await axios.delete(
-          `http://localhost:3000/cart/${cartId}/product/`,
+          `${process.env.NEXT_PUBLIC_URL_BACKEND}/cart/${cartId}/product/`,
           {
             cartId: cartId,
           },

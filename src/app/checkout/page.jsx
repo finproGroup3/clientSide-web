@@ -81,7 +81,7 @@ export default function Page() {
     setLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:3000/order/cost`,
+        `${process.env.NEXT_PUBLIC_URL_BACKEND}/order/cost`,
         {
           origin,
           destination,
@@ -103,7 +103,7 @@ export default function Page() {
       const userId = localStorage.getItem("userId");
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        `http://localhost:3000/users/${userId}`,
+        `${process.env.NEXT_PUBLIC_URL_BACKEND}/users/${userId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -120,7 +120,7 @@ export default function Page() {
       const cartId = localStorage.getItem("cartId");
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        `http://localhost:3000/cart/${cartId}`,
+        `${process.env.NEXT_PUBLIC_URL_BACKEND}/cart/${cartId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -139,7 +139,7 @@ export default function Page() {
     const token = localStorage.getItem("token");
     try {
       const response = await axios.put(
-        `http://localhost:3000/cart/${cartId}/shipping-cost`,
+        `${process.env.NEXT_PUBLIC_URL_BACKEND}/cart/${cartId}/shipping-cost`,
         {
           shippingCost,
           shippingMethod: selectedCourierServices,
@@ -159,7 +159,7 @@ export default function Page() {
   const fetchStoreData = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get(`http://localhost:3000/store/1`, {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_URL_BACKEND}/store/1`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -189,7 +189,7 @@ export default function Page() {
       const cartId = localStorage.getItem("cartId");
       const userId = localStorage.getItem("userId");
       const response = await axios.post(
-        `http://localhost:3000/order/`,
+        `${process.env.NEXT_PUBLIC_URL_BACKEND}/order/`,
         {
           userId: userId,
           cartId: cartId,
@@ -327,7 +327,7 @@ export default function Page() {
                 <div key={product.productId} className="flex border-b-2 pb-6 mt-4">
                   <div>
                     <Image
-                      src={`http://localhost:3000/uploads/productImage/${product.Product.imageUrl}`}
+                      src={`${process.env.NEXT_PUBLIC_URL_BACKEND}/uploads/productImage/${product.Product.imageUrl}`}
                       alt=""
                       width={90}
                       height={70}

@@ -34,7 +34,7 @@ export default function Listcart({ handleChangeQuantity, product, reFetch }) {
 
       if (confirmResult.isConfirmed) {
         // User confirmed, proceed with deletion
-        const response = await axios.delete(`http://localhost:3000/cart/${cartId}/product/${product.Product.id}`);
+        const response = await axios.delete(`${process.env.NEXT_PUBLIC_URL_BACKEND}0/cart/${cartId}/product/${product.Product.id}`);
 
         // Show success message
         await Swal.fire({
@@ -60,7 +60,7 @@ export default function Listcart({ handleChangeQuantity, product, reFetch }) {
     <div className="flex flex-row justify-between m-4">
       <div className="flex flex-row gap-3">
         <Image
-          src={`http://localhost:3000/uploads/productImage/${product.Product.imageUrl}`}
+          src={`${process.env.NEXT_PUBLIC_URL_BACKEND}0/uploads/productImage/${product.Product.imageUrl}`}
           alt=""
           width={100}
           height={100}

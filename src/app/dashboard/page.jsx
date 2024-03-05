@@ -71,7 +71,7 @@ function Dashboard() {
   }, []);
   const fetchCategories = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/category");
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_URL_BACKEND}/category`);
       // Limit to 8 items using array slicing
       const limitedCategories = response.data.data.slice(0, 8);
       setCategories(limitedCategories);
@@ -127,7 +127,7 @@ function Dashboard() {
   const fetchProvinces = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`http://localhost:3000/order/provinces`, {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_URL_BACKEND}/order/provinces`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -141,7 +141,7 @@ function Dashboard() {
   const fetchCities = async (provinceName) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`http://localhost:3000/order/cities/${provinceName}`, {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_URL_BACKEND}/order/cities/${provinceName}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -154,7 +154,7 @@ function Dashboard() {
   const fetchPromos = async () => {
     try {
       const storedToken = localStorage.getItem("token");
-      const response = await axios.get("http://localhost:3000/promo/", {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_URL_BACKEND}/promo/`, {
         headers: {
           Authorization: `Bearer ${storedToken}`,
         },
@@ -175,7 +175,7 @@ function Dashboard() {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post("http://localhost:3000/users/login", {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_URL_BACKEND}/users/login`, {
         email,
         password,
       });
@@ -197,7 +197,7 @@ function Dashboard() {
     try {
       // Make a request to sign up the user
       const response = await axios.post(
-        `http://localhost:3000/users/register`,
+        `${process.env.NEXT_PUBLIC_URL_BACKEND}/users/register`,
         formSignUp
       );
 
@@ -528,7 +528,7 @@ function Dashboard() {
                     <Image
                       src={
                         product.ProductGalleries[0]?.imageUrl
-                          ? `http://localhost:3000/uploads/productImage/${product.ProductGalleries[0].imageUrl}`
+                          ? `${process.env.NEXT_PUBLIC_URL_BACKEND}/uploads/productImage/${product.ProductGalleries[0].imageUrl}`
                           : defaultImage // Fallback image
                       }
                       alt={`Promo Image - ${promos[0].code}`}

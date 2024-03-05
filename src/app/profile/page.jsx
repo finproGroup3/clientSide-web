@@ -25,7 +25,7 @@ function Profile() {
   const fetchProvinces = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`http://localhost:3000/order/provinces`, {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_URL_BACKEND}/order/provinces`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -39,7 +39,7 @@ function Profile() {
   const fetchCities = async (provinceId) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`http://localhost:3000/order/cities/${provinceId}`, {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_URL_BACKEND}/order/cities/${provinceId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -54,7 +54,7 @@ function Profile() {
       const storedToken = localStorage.getItem("token");
       const userId = localStorage.getItem("userId");
       const response = await axios.get(
-        `http://localhost:3000/users/${userId}`,
+        `${process.env.NEXT_PUBLIC_URL_BACKEND}/users/${userId}`,
         {
           headers: {
             Authorization: `Bearer ${storedToken}`,
@@ -85,7 +85,7 @@ function Profile() {
   const handleChangeProvince = async (value) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.post(`http://localhost:3000/order/province-id`, { name: value }, {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_URL_BACKEND}/order/province-id`, { name: value }, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -106,7 +106,7 @@ function Profile() {
   const handleChangeCity = async (valueCity) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.post(`http://localhost:3000/order/city-id`, { name: valueCity }, {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_URL_BACKEND}/order/city-id`, { name: valueCity }, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -169,7 +169,7 @@ function Profile() {
       }
 
       const response = await axios.put(
-        `http://localhost:3000/users/${userId}/edit`,
+        `${process.env.NEXT_PUBLIC_URL_BACKEND}/users/${userId}/edit`,
         formData,
         {
           headers: {
@@ -217,7 +217,7 @@ function Profile() {
             ) : (
               // Jika tidak ada gambar baru, tampilkan gambar dari API
               <Image
-                src={`http://localhost:3000/uploads/profile/${user.profilePicture}`}
+                src={`${process.env.NEXT_PUBLIC_URL_BACKEND}/uploads/profile/${user.profilePicture}`}
                 alt="Current Image"
                 className="rounded-full w-full h-full object-cover"
                 width={90}

@@ -23,7 +23,7 @@ function Product({ searchParams }) {
       const cartId = localStorage.getItem("cartId");
 
       const response = await axios.post(
-        `http://localhost:3000/cart/${cartId}/product`,
+        `${process.env.NEXT_PUBLIC_URL_BACKEND}/cart/${cartId}/product`,
         {
           productId: selectedProduct.id,
           quantity: quantity,
@@ -38,7 +38,7 @@ function Product({ searchParams }) {
   const fetchFilteredProduct = async () => {
     try {
       const storedToken = localStorage.getItem("token");
-      const response = await axios.post("http://localhost:3000/product/filter-product",
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_URL_BACKEND}/product/filter-product`,
         {
           categoryId: category,
           name: value,
@@ -148,7 +148,7 @@ function Product({ searchParams }) {
                   <Image
                     src={
                       product.ProductGalleries[0]?.imageUrl
-                        ? `http://localhost:3000/uploads/productImage/${product.ProductGalleries[0].imageUrl}`
+                        ? `${process.env.NEXT_PUBLIC_URL_BACKEND}/uploads/productImage/${product.ProductGalleries[0].imageUrl}`
                         : { defaultImage } // Use defaultImage here
                     }
                     alt="Image"

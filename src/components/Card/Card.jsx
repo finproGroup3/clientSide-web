@@ -21,7 +21,7 @@ function Card() {
       const cartId = localStorage.getItem("cartId");
 
       const response = await axios.post(
-        `http://localhost:3000/cart/${cartId}/product`,
+        `${process.env.NEXT_PUBLIC_URL_BACKEND}/cart/${cartId}/product`,
         {
           productId: selectedProduct.id,
           quantity: quantity,
@@ -38,7 +38,7 @@ function Card() {
     const fetchProduct = async () => {
       try {
         const storedToken = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:3000/product/", {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_URL_BACKEND}/product/`, {
           headers: {
             Authorization: `Bearer ${storedToken}`,
           },
@@ -143,7 +143,7 @@ function Card() {
                   <Image
                     src={
                       product.ProductGalleries[0]?.imageUrl
-                        ? `http://localhost:3000/uploads/productImage/${product.ProductGalleries[0].imageUrl}`
+                        ? `${process.env.NEXT_PUBLIC_URL_BACKEND}/uploads/productImage/${product.ProductGalleries[0].imageUrl}`
                         : { defaultImage } // Use defaultImage here
                     }
                     alt="Image"

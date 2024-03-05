@@ -14,7 +14,7 @@ export default function Page() {
     const downloadInvoicePDF = async (invoiceUrl) => {
         try {
             // Fetch the PDF file from the backend
-            const response = await fetch(`http://localhost:3000/uploads/invoices/${invoiceUrl}`);
+            const response = await fetch(`${process.env.NEXT_PUBLIC_URL_BACKEND}/uploads/invoices/${invoiceUrl}`);
             const blob = await response.blob();
 
             // Create a temporary anchor element
@@ -39,7 +39,7 @@ export default function Page() {
                 const storedToken = localStorage.getItem("token");
                 const userId = localStorage.getItem("userId");
                 const response = await axios.get(
-                    `http://localhost:3000/order/user/${userId}`,
+                    `${process.env.NEXT_PUBLIC_URL_BACKEND}/order/user/${userId}`,
                     {
                         headers: {
                             Authorization: `Bearer ${storedToken}`,
@@ -68,7 +68,7 @@ export default function Page() {
             formData.append("paymentBill", file);
 
             const response = await axios.put(
-                `http://localhost:3000/order/${orderId}/payment-bill`,
+                `${process.env.NEXT_PUBLIC_URL_BACKEND}/order/${orderId}/payment-bill`,
                 formData,
                 {
                     headers: {
@@ -134,7 +134,7 @@ export default function Page() {
                                         <div className="flex">
                                             <div className=" border border-blue-gray-200 rounded-md">
                                                 <Image
-                                                    src={`http://localhost:3000/uploads/productImage/${product.Product.imageUrl}`}
+                                                    src={`${process.env.NEXT_PUBLIC_URL_BACKEND}/uploads/productImage/${product.Product.imageUrl}`}
                                                     alt={product.Product.name}
                                                     width={90}
                                                     height={90}
@@ -233,7 +233,7 @@ export default function Page() {
                                                 Payment Bill:
                                             </p>
                                             <Image
-                                                src={`http://localhost:3000/uploads/paymentBills/${order.paymentBill}`}
+                                                src={`${process.env.NEXT_PUBLIC_URL_BACKEND}/uploads/paymentBills/${order.paymentBill}`}
                                                 alt="Payment Bill"
                                                 width={200}
                                                 height={100}

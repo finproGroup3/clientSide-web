@@ -18,7 +18,7 @@ const Navbar = () => {
       try {
         const cartId = localStorage.getItem("cartId");
         const response = await axios.get(
-          `http://localhost:3000/cart/${cartId}`
+          `${process.env.NEXT_PUBLIC_URL_BACKEND}/cart/${cartId}`
         );
         setCart(response.data.data);
       } catch (error) {
@@ -67,7 +67,7 @@ const Navbar = () => {
   const fetchCategories = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch("http://localhost:3000/category/", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_BACKEND}/category/`, {
         headers: {
           Authorization: `Bearer ${token}`, // Include the bearer token in the headers
         },

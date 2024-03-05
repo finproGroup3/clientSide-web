@@ -19,7 +19,7 @@ const ProductDetail = () => {
       try {
         const storedToken = localStorage.getItem("token");
         const response = await axios.get(
-          `http://localhost:3000/product/${idFromPath}`,
+          `${process.env.NEXT_PUBLIC_URL_BACKEND}/product/${idFromPath}`,
           {
             headers: {
               Authorization: `Bearer ${storedToken}`,
@@ -44,7 +44,7 @@ const ProductDetail = () => {
       const parsedQuantity = parseInt(quantity, 10);
 
       const response = await axios.post(
-        `http://localhost:3000/cart/${cartId}/product`,
+        `${process.env.NEXT_PUBLIC_URL_BACKEND}/cart/${cartId}/product`,
         {
           productId: parsedProductId,
           quantity: parsedQuantity,
@@ -163,7 +163,7 @@ const ProductDetail = () => {
                       className={`border-4 shadow-lg px-20 py-8 rounded-md border-blue-500 items-center flex flex-col panel`}
                     >
                       <Image
-                        src={`http://localhost:3000/uploads/productImage/${product.ProductGalleries[activeTab].imageUrl}`}
+                        src={`${process.env.NEXT_PUBLIC_URL_BACKEND}/uploads/productImage/${product.ProductGalleries[activeTab].imageUrl}`}
                         alt={"image"}
                         className="w-96 h-96 object-cover"
                         width="400"
@@ -184,7 +184,7 @@ const ProductDetail = () => {
                         onClick={() => handleClick(index)}
                       >
                         <Image
-                          src={`http://localhost:3000/uploads/productImage/${products.imageUrl}`}
+                          src={`${process.env.NEXT_PUBLIC_URL_BACKEND}/uploads/productImage/${products.imageUrl}`}
                           alt={"image"}
                           className="w-12 h-12 object-cover"
                           width="100"
